@@ -27,7 +27,10 @@ The project includes interactive visual effects powered by **react-bits** to enh
 - **Vercel** (deployment)
 
 ---
-
+## Screenshots
+![1st](image.png)
+![2nd](image-1.png)
+![3rd](image-2.png)
 
 
 

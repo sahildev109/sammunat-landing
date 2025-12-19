@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState, useMemo, CSSProperties } from 'react';
+import React, { useRef, useEffect, useState, useMemo, CSSProperties, JSX } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText as GSAPSplitText } from 'gsap/SplitText';
@@ -155,61 +155,80 @@ const Shuffle = ({
 
         const rolls = Math.max(1, Math.floor(shuffleTimes));
         const rand = (set: string) => set.charAt(Math.floor(Math.random() * set.length)) || '';
+chars.forEach((ch) => {
+  const el = ch as HTMLElement;
 
-        chars.forEach((ch: HTMLElement) => {
-          const parent = ch.parentElement;
-          if (!parent) return;
+  const parent = el.parentElement;
+  if (!parent) return;
 
-          const w = ch.getBoundingClientRect().width;
-          if (!w) return;
+  const w = el.getBoundingClientRect().width;
+  if (!w) return;
 
-          const wrap = document.createElement('span');
-          wrap.className = 'inline-block overflow-hidden align-baseline text-left';
-          Object.assign(wrap.style, { width: w + 'px' });
+  const wrap = document.createElement("span");
+  wrap.className = "inline-block overflow-hidden align-baseline text-left";
+  Object.assign(wrap.style, { width: w + "px" });
 
-          const inner = document.createElement('span');
-          inner.className = 'inline-block whitespace-nowrap will-change-transform origin-left transform-gpu';
+  const inner = document.createElement("span");
+  inner.className =
+    "inline-block whitespace-nowrap will-change-transform origin-left transform-gpu";
 
-          parent.insertBefore(wrap, ch);
-          wrap.appendChild(inner);
+  parent.insertBefore(wrap, el);
+  wrap.appendChild(inner);
 
-          const firstOrig = ch.cloneNode(true) as HTMLElement;
-          firstOrig.className = 'inline-block text-left';
-          Object.assign(firstOrig.style, { width: w + 'px', fontFamily: computedFont });
+  const firstOrig = el.cloneNode(true) as HTMLElement;
+  firstOrig.className = "inline-block text-left";
+  Object.assign(firstOrig.style, {
+    width: w + "px",
+    fontFamily: computedFont,
+  });
 
-          ch.setAttribute('data-orig', '1');
-          ch.className = 'inline-block text-left';
-          Object.assign(ch.style, { width: w + 'px', fontFamily: computedFont });
+  el.setAttribute("data-orig", "1");
+  el.className = "inline-block text-left";
+  Object.assign(el.style, {
+    width: w + "px",
+    fontFamily: computedFont,
+  });
 
-          inner.appendChild(firstOrig);
-          for (let k = 0; k < rolls; k++) {
-            const c = ch.cloneNode(true) as HTMLElement;
-            if (scrambleCharset) c.textContent = rand(scrambleCharset);
-            c.className = 'inline-block text-left';
-            Object.assign(c.style, { width: w + 'px', fontFamily: computedFont });
-            inner.appendChild(c);
-          }
-          inner.appendChild(ch);
+  inner.appendChild(firstOrig);
 
-          const steps = rolls + 1;
-          let startX = 0;
-          let finalX = -steps * w;
-          if (shuffleDirection === 'right') {
-            const firstCopy = inner.firstElementChild as HTMLElement;
-            const real = inner.lastElementChild as HTMLElement;
-            if (real) inner.insertBefore(real, inner.firstChild);
-            if (firstCopy) inner.appendChild(firstCopy);
-            startX = -steps * w;
-            finalX = 0;
-          }
+  for (let k = 0; k < rolls; k++) {
+    const c = el.cloneNode(true) as HTMLElement;
+    if (scrambleCharset) c.textContent = rand(scrambleCharset);
+    c.className = "inline-block text-left";
+    Object.assign(c.style, {
+      width: w + "px",
+      fontFamily: computedFont,
+    });
+    inner.appendChild(c);
+  }
 
-          gsap.set(inner, { x: startX, force3D: true });
-          if (colorFrom) inner.style.color = colorFrom;
-          inner.setAttribute('data-final-x', String(finalX));
-          inner.setAttribute('data-start-x', String(startX));
+  inner.appendChild(el);
 
-          wrappersRef.current.push(wrap);
-        });
+  const steps = rolls + 1;
+  let startX = 0;
+  let finalX = -steps * w;
+
+  if (shuffleDirection === "right") {
+    const firstCopy = inner.firstElementChild as HTMLElement | null;
+    const real = inner.lastElementChild as HTMLElement | null;
+
+    if (real) inner.insertBefore(real, inner.firstChild);
+    if (firstCopy) inner.appendChild(firstCopy);
+
+    startX = -steps * w;
+    finalX = 0;
+  }
+
+  gsap.set(inner, { x: startX, force3D: true });
+
+  if (colorFrom) inner.style.color = colorFrom;
+
+  inner.setAttribute("data-final-x", String(finalX));
+  inner.setAttribute("data-start-x", String(startX));
+
+  wrappersRef.current.push(wrap);
+});
+
       };
 
       const inners = (): HTMLElement[] => wrappersRef.current.map(w => w.firstElementChild as HTMLElement);

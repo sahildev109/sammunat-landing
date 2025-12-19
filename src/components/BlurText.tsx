@@ -135,15 +135,24 @@ const BlurText = ({
           spanTransition.ease = easing;
         }
 
+        const initialState = {
+  opacity: fromSnapshot.opacity ?? 0,
+  filter: fromSnapshot.filter ?? "blur(8px)",
+  transform: fromSnapshot.transform ?? "translateY(0px)",
+};
+
         return (
           <motion.span
-            className="inline-block will-change-[transform,filter,opacity]"
-            key={index}
-            initial={fromSnapshot}
-            animate={inView ? animateKeyframes : fromSnapshot}
-            transition={spanTransition}
-            onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
-          >
+  className="inline-block will-change-[transform,filter,opacity]"
+  key={index}
+  initial={initialState}
+  animate={inView ? animateKeyframes : initialState}
+  transition={spanTransition}
+  onAnimationComplete={
+    index === elements.length - 1 ? onAnimationComplete : undefined
+  }
+>
+
             {segment === ' ' ? '\u00A0' : segment}
             {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
           </motion.span>
