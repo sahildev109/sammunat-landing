@@ -1,4 +1,4 @@
-# Sammunat Landing Page
+# Sammunat Landing Page | [Live App](https://sammunat-landing-2e1g.vercel.app/)
 
 A modern, responsive landing page built using **Next.js** and **Tailwind CSS**, designed to showcase a clean UI, smooth animations, and best frontend practices.
 
